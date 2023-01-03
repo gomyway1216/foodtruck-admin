@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import * as api from '../../Firebase/home';
 import { Button, IconButton, Tooltip } from '@mui/material';
-import { DataGrid, GridToolbarContainer, 
-  GridToolbarColumnsButton, GridToolbarFilterButton, 
-  GridToolbarDensitySelector, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarColumnsButton,
+  GridToolbarFilterButton, GridToolbarDensitySelector, 
+  GridToolbarExport } from '@mui/x-data-grid';
 import ReplayIcon from '@mui/icons-material/Replay';
 import EditIcon from '@mui/icons-material/Edit';
-import EditMenuModal from './EditMenuModal';
-import AddMenuModal from './AddMenuModal';
+import EditMenuDialog from './EditMenuDialog';
 import styles from './menu-table.module.scss';
 
 const MenuTable = () => {
   const [menuList, setMenuList] = useState([]);
   const [menuTypeList, setMenuTypeList] = useState([]);
   const [ingredientList, setIngredientList] = useState([]);
+  const [dialogItem, setDialogItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogItem, setDialogItem] = useState({});
-  const [addMenuDialogOpen, setAddMenuDialogOpen] = useState(false);
 
   // the default width is 100px
   const columns = [
@@ -27,8 +25,10 @@ const MenuTable = () => {
     { field: 'price', headerName: 'Price', width: 70 },
     { field: 'description', headerName: 'Description', flex: 1 },
     { field: 'ingredients', headerName: 'Ingredients', flex: 1 },
-    { field: 'isVisibleToCustomer', headerName: 'Visible', width: 80, type: 'boolean' },
-    { field: 'isAvailable', headerName: 'Available', width: 80, type: 'boolean' },
+    { field: 'isVisibleToCustomer', headerName: 'Visible', 
+      width: 80, type: 'boolean' },
+    { field: 'isAvailable', headerName: 'Available', 
+      width: 80, type: 'boolean' },
     {
       field: 'action',
       headerName: 'Edit',
@@ -38,7 +38,7 @@ const MenuTable = () => {
         const onClick = (e) => {
           e.stopPropagation(); // don't select this row after clicking
           setDialogItem(params.row);
-          handleDialogOpen();
+          setDialogOpen(true);
         };
         return (
           <Tooltip title="edit">
@@ -51,12 +51,9 @@ const MenuTable = () => {
     }
   ];
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
   const handleDialogClose = () => {
     setDialogOpen(false);
+    setDialogItem(null);
   };
 
   const getMenuList = async () => {
@@ -74,25 +71,25 @@ const MenuTable = () => {
     setIngredientList(ingredients);
   };
 
+  const updateList = async () => {
+    getMenuList();
+    getMenuTypeList();
+    getIngredientsList();
+  };
+
   useEffect(() => {
     getMenuList();
     getMenuTypeList();
     getIngredientsList();
   }, []);
-
-  const handleAddMenuClick = () => {
-    setAddMenuDialogOpen(true);
-  };
-
-  const handleAddMenuDialogClose = () => {
-    setAddMenuDialogOpen(false);
-  };
   
   return (
     <div className={styles.menuTableRoot}>
       <div className={styles.commands}>
-        <Button onClick={handleAddMenuClick} variant="outlined" >Add menu</Button>
-        <Button onClick={getMenuList} variant="outlined" startIcon={<ReplayIcon />}>Update</Button>
+        <Button onClick={() => setDialogOpen(true)} 
+          variant="outlined" >Add menu</Button>
+        <Button onClick={updateList} variant="outlined" 
+          startIcon={<ReplayIcon />}>Update</Button>
       </div>
       <DataGrid
         rows={menuList}
@@ -107,8 +104,13 @@ const MenuTable = () => {
             </GridToolbarContainer>);
         }}}
       />
-      <EditMenuModal item={dialogItem} open={dialogOpen} onClose={handleDialogClose} callback={getMenuList} menuTypeList={menuTypeList} ingredientList={ingredientList}/>
-      <AddMenuModal open={addMenuDialogOpen} onClose={handleAddMenuDialogClose} callback={getMenuList} menuTypeList={menuTypeList} ingredientList={ingredientList}/>
+      <EditMenuDialog open={dialogOpen} onClose={handleDialogClose} 
+        callback={getMenuList} existingItem={dialogItem}
+        onSave={dialogItem ? api.updateMenu : api.addMenu }
+        menuTypeList={menuTypeList} ingredientList={ingredientList}/>
+      {/* <AddMenuDialog open={addMenuDialogOpen} 
+        onClose={() => setAddMenuDialogOpen(false)} callback={getMenuList} 
+        menuTypeList={menuTypeList} ingredientList={ingredientList}/> */}
     </div>
   );
 };

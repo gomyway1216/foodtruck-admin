@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import * as api from '../../Firebase/home';
-import { Button, Box, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, 
-  FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select, Switch, TextField } from '@mui/material';
+import { Button, Box, Chip, Dialog, DialogActions, DialogContent, DialogTitle, 
+  FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, 
+  LinearProgress, MenuItem, OutlinedInput, Select, 
+  Switch, TextField } from '@mui/material';
 import ImageUpload from '../Image/ImageUpload';
-import styles from './edit-menu-modal.module.scss';
+import Alert from '../../Component/PopUp/Alert';
 
-const defaultErrorDescription = {
+const defaultItem = {
+  title: '',
+  subTitle: '',
+  type: '',
+  price: 0,
+  ingredients: [],
+  description: '',
+  isVisibleToCustomer: false,
+  isAvailable: false,
+  image: ''
+};
+
+const defaultInputError = {
   title: '',
   subTitle: '',
   type: '',
@@ -29,133 +42,145 @@ const MenuProps = {
   },
 };
 
-const EditMenuModal = (props) => {
+const EditMenuDialog = (props) => {
   const [open, setOpen] = useState(props.open);
-  const [dialogItem, setDialogItem] = useState(props.item);
-  const [errorDescription, setErrorDescription] = useState(defaultErrorDescription);
+  // const [dialogItem, setDialogItem] = useState(props.item);
+  const [item, setItem] = useState(defaultItem);
+  const [inputError, setInputError] 
+  = useState(defaultInputError);
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
   useEffect(() => {
     setOpen(props.open);
-    // trick to initialize dialogItem, without the below line, dialogItem is empty
-    setDialogItem(props.item);
+    if (props.existingItem) {
+      setItem(props.existingItem);
+    } else {
+      setItem(defaultItem);
+    }
   }, [props.open]);
 
   const onItemInputChange = (e) => {
-    setDialogItem({
-      ...dialogItem,
+    setItem({
+      ...item,
       [e.target.name]: e.target.value
     });
   };
 
   const onSelectInputChange = (e) => {
-    setDialogItem({
-      ...dialogItem,
+    setItem({
+      ...item,
       [e.target.name]: e.target.value
     });
   };
 
   const onSwitchChange = (e) => {
-    setDialogItem({
-      ...dialogItem,
+    setItem({
+      ...item,
       [e.target.name]: e.target.checked
     });
   };
 
   const handleMultipleSelectChange = (e) => {
     // On autofill we get a stringified value.
-    const val = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
-    setDialogItem({
-      ...dialogItem,
+    const val = typeof e.target.value === 'string' ? 
+      e.target.value.split(',') : e.target.value;
+    setItem({
+      ...item,
       [e.target.name]: val
     });
   };
 
   const handleImageUrl = (imageUrl) => {
-    setDialogItem({
-      ...dialogItem,
+    setItem({
+      ...item,
       'image': imageUrl
     });
   };
 
   const onSave = async () => {
     try {
-      const item = dialogItem;
-      item.price = Number(item.price);
-      setLoading(true);
+      const itemCopy = item;
+      itemCopy.price = Number(itemCopy.price);
       // verify the input is valid
-      const { title, type, price, description, image } = item;
+      const { title, type, price, description } = itemCopy;
       let errorExist = false;
-      const errDescCopy = errorDescription;
+      const inputErrorCopy = inputError;
       if(!title) {
         errorExist = true;
-        errDescCopy.title = 'title needs to be set';
+        inputErrorCopy.title = 'title needs to be set';
       } else {
-        errDescCopy.title = '';
+        inputErrorCopy.title = '';
       }
 
       if (!type) {
         errorExist = true;
-        errDescCopy.type = 'type needs to be set';
+        inputErrorCopy.type = 'type needs to be set';
       } else {
-        errDescCopy.type = '';
+        inputErrorCopy.type = '';
       }
 
       if (!price) {
         errorExist = true;
-        errDescCopy.price = 'price needs to be set';
+        inputErrorCopy.price = 'price needs to be set';
       } else {
-        errDescCopy.price = '';
+        inputErrorCopy.price = '';
       }
 
       if(!description) {
         errorExist = true;
-        errDescCopy.description = 'description needs to be set';
+        inputErrorCopy.description = 'description needs to be set';
       } else {
-        errDescCopy.description = '';
+        inputErrorCopy.description = '';
       }
-      setErrorDescription(errDescCopy);
 
+      setInputError(inputErrorCopy);
       if(errorExist) {
         return;
       }
 
-      await api.updateMenu(item);
-      setLoading(false);
+      setLoading(true);
+      await props.onSave(itemCopy);
       props.onClose();
       props.callback();
     } catch (error) {
-      console.error(error);
-      setLoading(false);
+      setApiError(error.message);
     }
+    setLoading(false);
   };
 
-  if (Object.keys(dialogItem).length === 0) {
-    return <></>;
-  }
+  const handleAlertClose = () => {
+    setApiError('');
+  };
 
   return (
     <div>
+      {apiError && <Alert message={apiError} onClose={handleAlertClose}/>}
       <Dialog open={open} onClose={() => props.onClose()} fullWidth>
-        <DialogTitle>Add Menu</DialogTitle>
+        <DialogTitle>{props.existingItem ? 'Edit Value' 
+          : 'Add Value'}</DialogTitle>
+        <Box sx={{ width: '100%' }}>
+          {loading && <LinearProgress />}
+        </Box>
         <DialogContent>
           <Grid container spacing={3}>      
             <Grid container item={true} xs={12} sm={12} md={12}>
-              <ImageUpload handleImageUrl={handleImageUrl} originalImageUrl={dialogItem.image}/>
+              <ImageUpload handleImageUrl={handleImageUrl} 
+                originalImageUrl={item.image}/>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
               <TextField id='title' name='title' label='title'
                 fullWidth
                 required
-                helperText={errorDescription['title']}
-                value={dialogItem['title']} 
+                helperText={inputError['title']}
+                value={item['title']} 
                 onChange={onItemInputChange}/>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
               <TextField id='subTitle' name='subTitle' label='Sub Title'
                 fullWidth
-                helperText={errorDescription['subTitle']}
-                value={dialogItem['subTitle']} 
+                helperText={inputError['subTitle']}
+                value={item['subTitle']} 
                 onChange={onItemInputChange}/>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
@@ -165,24 +190,25 @@ const EditMenuModal = (props) => {
                   id="type"
                   name="type"
                   required
-                  value={dialogItem['type']}
+                  value={item['type']}
                   onChange={onSelectInputChange}
                   style={{width: 200}}
                   label="Type"
                 >
                   {props.menuTypeList.map((type, i) =>
-                    <MenuItem key={type.id} value={type.name}>{type.name}</MenuItem>
+                    <MenuItem key={type.id} 
+                      value={type.name}>{type.name}</MenuItem>
                   )}
                 </Select>
-                <FormHelperText>{errorDescription['type']}</FormHelperText>
+                <FormHelperText>{inputError['type']}</FormHelperText>
               </FormControl>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
               <TextField id='price' name='price' label='price'
                 fullWidth
                 required
-                helperText={errorDescription['price']}
-                value={dialogItem['price']}
+                helperText={inputError['price']}
+                value={item['price']}
                 type="number"
                 onChange={onItemInputChange}/>
             </Grid>
@@ -193,9 +219,10 @@ const EditMenuModal = (props) => {
                   id="ingredients"
                   name="ingredients"
                   multiple
-                  value={dialogItem['ingredients']}
+                  value={item['ingredients']}
                   onChange={handleMultipleSelectChange}
-                  input={<OutlinedInput id="select-multiple-chip" label="Ingredients" />}
+                  input={<OutlinedInput id="select-multiple-chip" 
+                    label="Ingredients" />}
                   renderValue={(selected) => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                       {selected.map((value) => (
@@ -221,15 +248,15 @@ const EditMenuModal = (props) => {
               <TextField id='description' name='description' label='Description'
                 fullWidth
                 required
-                helperText={errorDescription['description']}
-                value={dialogItem['description']} 
+                helperText={inputError['description']}
+                value={item['description']} 
                 onChange={onItemInputChange}/>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
               <FormControlLabel
                 control={<Switch
                   name='isVisibleToCustomer'
-                  checked={dialogItem['isVisibleToCustomer']}
+                  checked={item['isVisibleToCustomer']}
                   onChange={onSwitchChange}
                 />}
                 label='Make this menu visible to customer'
@@ -239,7 +266,7 @@ const EditMenuModal = (props) => {
               <FormControlLabel
                 control={<Switch
                   name='isAvailable'
-                  checked={dialogItem['isAvailable']}
+                  checked={item['isAvailable']}
                   onChange={onSwitchChange}
                 />}
                 label='Still stocked'
@@ -256,13 +283,14 @@ const EditMenuModal = (props) => {
   );
 };
 
-EditMenuModal.propTypes = {
+EditMenuDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   callback: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   menuTypeList: PropTypes.array.isRequired,
   ingredientList: PropTypes.array.isRequired,
-  item: PropTypes.shape({
+  existingItem: PropTypes.shape({
     id: PropTypes.string,
     title: PropTypes.string,
     subTitle: PropTypes.string,
@@ -276,4 +304,4 @@ EditMenuModal.propTypes = {
   })
 };
 
-export default EditMenuModal;
+export default EditMenuDialog;

@@ -1,11 +1,27 @@
 .adminPageRoot {
   margin-top: 100px;
+  padding-left: 5%;
+  padding-right: 5%;
 
-  .section {
+  .menuTable {
     .title {
       font-size: x-large;
       font-weight: bold;
       text-align: center;
+    }
+  }
+
+  .listTables {
+    margin-top: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    .title {
+      font-size: x-large;
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 10px;
     }
   }
 }

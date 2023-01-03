@@ -1,6 +1,10 @@
 import * as fbConnect from './firebaseConnect';
-import { addDoc, collection, getDoc, getDocs, doc, Timestamp, query, updateDoc, where } from 'firebase/firestore'; 
+import { addDoc, collection, getDoc, getDocs, doc, Timestamp, 
+  query, updateDoc, where } from 'firebase/firestore'; 
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
+
+const DOC_ID_MISSING_ERR_MSG = 'Data is not saved correctly in server.'
+        + ' Document id is not returned.';
 
 export const getDbAccess = () => {
   return fbConnect.exportDbAccess();
@@ -18,9 +22,7 @@ export const getMenuImageRef = async (file) => {
   const fileRef = await ref(storage, 'menu/' + file.name);
 
   // 'file' comes from the Blob or File API
-  await uploadBytes(fileRef, file).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
-  });
+  await uploadBytes(fileRef, file);
 
   const downloadURL = await getDownloadURL(fileRef);
   return downloadURL;
@@ -37,7 +39,8 @@ export const getSchedule = async () => {
   const date1 = Timestamp.fromDate(today);
   const date2 = Timestamp.fromDate(tomorrow);
   const response = [];
-  const q = query(collection(getDbAccess(), 'schedule'), where('startTime', '>=', date1), where('startTime', '<=', date2));
+  const q = query(collection(getDbAccess(), 'schedule'), 
+    where('startTime', '>=', date1), where('startTime', '<=', date2));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     const schedule = {
@@ -94,7 +97,8 @@ export const getMenuList = async () => {
 // this can be used in client side frontend
 export const getPublicMenuList = async () => {
   const response = [];
-  const q = query(collection(getDbAccess(), 'menu'), where('isVisibleToCustomer', '==', true));
+  const q = query(collection(getDbAccess(), 'menu'), 
+    where('isVisibleToCustomer', '==', true));
   const querySnapshot = await getDocs(q);
   for (let i = 0; i < querySnapshot.docs.length; i++) {
     const menuDoc = querySnapshot.docs[i];
@@ -117,23 +121,6 @@ export const getPublicMenuList = async () => {
   return response;
 };
 
-export const updateMenu = async (item) => {
-  const ref = doc(getDbAccess(), 'menu', item.id);
-  const updateResult = await updateDoc(ref, {
-    title: item.title,
-    subTitle: item.subTitle,
-    type: item.type,
-    price: item.price,
-    description: item.description,
-    ingredients: item.ingredients,
-    isVisibleToCustomer: item.isVisibleToCustomer,
-    isAvailable: item.isAvailable,
-    image: item.image
-  });
-
-  return updateResult;
-};
-
 export const addMenu = async (item) => {
   const docRef = await addDoc(collection(getDbAccess(), 'menu'), {
     title: item.title,
@@ -146,7 +133,24 @@ export const addMenu = async (item) => {
     isAvailable: item.isAvailable,
     image: item.image
   });
-  return docRef.id;
+  if (!docRef.id) {
+    throw new Error(DOC_ID_MISSING_ERR_MSG);
+  }
+};
+
+export const updateMenu = async (item) => {
+  const ref = doc(getDbAccess(), 'menu', item.id);
+  await updateDoc(ref, {
+    title: item.title,
+    subTitle: item.subTitle,
+    type: item.type,
+    price: item.price,
+    description: item.description,
+    ingredients: item.ingredients,
+    isVisibleToCustomer: item.isVisibleToCustomer,
+    isAvailable: item.isAvailable,
+    image: item.image
+  });
 };
 
 export const getIngredientList = async () => {
@@ -161,4 +165,36 @@ export const getIngredientList = async () => {
     response.push(ingredient);
   }
   return response;
+};
+
+export const addMenuType = async (item) => {
+  const docRef = await addDoc(collection(getDbAccess(), 'menuType'), {
+    name: item.name
+  });
+  if (!docRef.id) {
+    throw new Error(DOC_ID_MISSING_ERR_MSG);
+  }
+};
+
+export const updateMenuType = async (item) => {
+  const ref = doc(getDbAccess(), 'menuType', item.id);
+  await updateDoc(ref, {
+    name: item.name
+  });
+};
+
+export const addIngredient = async (item) => {
+  const docRef = await addDoc(collection(getDbAccess(), 'ingredient'), {
+    name: item.name
+  });
+  if (!docRef.id) {
+    throw new Error(DOC_ID_MISSING_ERR_MSG);
+  }
+};
+
+export const updateIngredient = async (item) => {
+  const ref = doc(getDbAccess(), 'ingredient', item.id);
+  await updateDoc(ref, {
+    name: item.name
+  });
 };

@@ -75,11 +75,15 @@ const SignInPage = () => {
             {error}
           </Alert>
         }
-        <TextField className={styles.inputField} id="email" name="email" label="email" 
-          value={itemInput.email} onChange={onItemInputChange} helperText={errorText.email}/>
-        <TextField className={styles.inputField} id="password" name="password" label="Password" 
-          type="password" value={itemInput.password} onChange={onItemInputChange} helperText={errorText.password} />
-        <Button variant="contained" color="primary" onClick={onSignIn}>Sign In</ Button>
+        <TextField className={styles.inputField} id="email" name="email" 
+          label="email" value={itemInput.email} onChange={onItemInputChange} 
+          helperText={errorText.email}/>
+        <TextField className={styles.inputField} id="password" name="password" 
+          label="Password" type="password" 
+          value={itemInput.password} onChange={onItemInputChange} 
+          helperText={errorText.password} />
+        <Button variant="contained" color="primary" 
+          onClick={onSignIn}>Sign In</ Button>
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 import React, { createContext,useEffect, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { auth, signInWithEmail, signOutUser } from '../Firebase/firebaseConnect';
+import { auth, signInWithEmail, signOutUser } 
+  from '../Firebase/firebaseConnect';
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();

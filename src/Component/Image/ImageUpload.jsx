@@ -44,7 +44,8 @@ const ImageUpload = (props) => {
             size="small"
             style={{ display: imageUrl ? 'inline' : 'none' }}
             variant="standard"
-            value={selectedImage ? selectedImage.name: (imageUrl ? imageUrl : '')}
+            value={selectedImage ? selectedImage.name: 
+              (imageUrl ? imageUrl : '')}
           />
         </div>
       </div>
@@ -54,7 +55,8 @@ const ImageUpload = (props) => {
       {imageUrl && (
         <Box mt={2} textAlign="center">
           <div>Image Preview:</div>
-          <img src={imageUrl} alt={selectedImage ? selectedImage.name : imageUrl} className={styles.imagePreview} />
+          <img src={imageUrl} alt={selectedImage ? 
+            selectedImage.name : imageUrl} className={styles.imagePreview} />
         </Box>
       )}
     </>
