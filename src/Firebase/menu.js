@@ -1,5 +1,5 @@
 import * as fbConnect from './firebaseConnect';
-import { addDoc, collection, getDoc, getDocs, doc, Timestamp, 
+import { addDoc, collection, deleteDoc, getDoc, getDocs, doc, Timestamp, 
   query, updateDoc, where } from 'firebase/firestore'; 
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
@@ -81,13 +81,18 @@ export const getMenuList = async () => {
       id: menuDoc.id,
       title: menuDoc.data().title,
       subTitle: menuDoc.data().subTitle,
-      price: menuDoc.data().price,
       type: menuDoc.data().type,
+      price: menuDoc.data().price,
+      cost: menuDoc.data().cost,
       description: menuDoc.data().description,
       ingredients: menuDoc.data().ingredients,
       image: menuDoc.data().image,
       isVisibleToCustomer: menuDoc.data().isVisibleToCustomer,
-      isAvailable: menuDoc.data().isAvailable
+      isAvailable: menuDoc.data().isAvailable,
+      order: menuDoc.data().order, // order of the food displayed
+      originalStockCount: menuDoc.data().originalStockCount,
+      soldCount: menuDoc.data().soldCount,
+      canceledCount: menuDoc.data().canceledCount,
     };
     response.push(menu);
   }
@@ -108,13 +113,17 @@ export const getPublicMenuList = async () => {
       id: menuDoc.id,
       title: menuDoc.data().title,
       subTitle: menuDoc.data().subTitle,
-      price: menuDoc.data().price,
       type: menuDoc.data().type,
+      price: menuDoc.data().price,
+      cost: menuDoc.data().cost,
       description: menuDoc.data().description,
       ingredients: menuDoc.data().ingredients,
       image: menuDoc.data().image,
-      isVisibleToCustomer: menuDoc.data().isVisibleToCustomer,
-      isAvailable: menuDoc.data().isAvailable
+      isAvailable: menuDoc.data().isAvailable,
+      order: menuDoc.data().order, // order of the food displayed
+      originalStockCount: menuDoc.data().originalStockCount,
+      soldCount: menuDoc.data().soldCount,
+      canceledCount: menuDoc.data().canceledCount,
     };
     response.push(menu);
   }
@@ -127,11 +136,16 @@ export const addMenu = async (item) => {
     subTitle: item.subTitle,
     type: item.type,
     price: item.price,
+    cost: item.cost,
     description: item.description,
     ingredients: item.ingredients,
+    image: item.image,
     isVisibleToCustomer: item.isVisibleToCustomer,
     isAvailable: item.isAvailable,
-    image: item.image
+    order: item.order, // order of the food displayed
+    originalStockCount: item.originalStockCount,
+    soldCount: item.soldCount,
+    canceledCount: item.canceledCount
   });
   if (!docRef.id) {
     throw new Error(DOC_ID_MISSING_ERR_MSG);
@@ -145,11 +159,16 @@ export const updateMenu = async (item) => {
     subTitle: item.subTitle,
     type: item.type,
     price: item.price,
+    cost: item.cost,
     description: item.description,
     ingredients: item.ingredients,
+    image: item.image,
     isVisibleToCustomer: item.isVisibleToCustomer,
     isAvailable: item.isAvailable,
-    image: item.image
+    order: item.order, // order of the food displayed
+    originalStockCount: item.originalStockCount,
+    soldCount: item.soldCount,
+    canceledCount: item.canceledCount
   });
 };
 
@@ -197,4 +216,12 @@ export const updateIngredient = async (item) => {
   await updateDoc(ref, {
     name: item.name
   });
+};
+
+export const deleteMenu = async (id) => {
+  try {
+    await deleteDoc(doc(getDbAccess(), 'menu', id));
+  } catch (err) {
+    throw new Error('deleting menu is failing.!');
+  }
 };

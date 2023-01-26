@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, LinearProgress, TextField } from '@mui/material';
-import * as api from '../../Firebase/home';
+import * as api from '../../Firebase/menu';
 import styles from './image-upload.module.scss';
 
 const ImageUpload = (props) => {

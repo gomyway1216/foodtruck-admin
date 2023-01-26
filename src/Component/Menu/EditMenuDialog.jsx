@@ -12,8 +12,13 @@ const defaultItem = {
   subTitle: '',
   type: '',
   price: 0,
+  cost: 0,
   ingredients: [],
   description: '',
+  order: 0, // order of the food displayed
+  originalStockCount: 0,
+  soldCount: 0,
+  canceledCount: 0,
   isVisibleToCustomer: false,
   isAvailable: false,
   image: ''
@@ -24,8 +29,13 @@ const defaultInputError = {
   subTitle: '',
   type: '',
   price: '',
+  cost: '',
   ingredients: '',
   description: '',
+  order: '',
+  originalStockCount: '',
+  soldCount: '',
+  canceledCount: '',
   isVisibleToCustomer: '',
   isAvailable: '',
   image: ''
@@ -50,6 +60,7 @@ const EditMenuDialog = (props) => {
   = useState(defaultInputError);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
 
   useEffect(() => {
     setOpen(props.open);
@@ -102,6 +113,11 @@ const EditMenuDialog = (props) => {
     try {
       const itemCopy = item;
       itemCopy.price = Number(itemCopy.price);
+      itemCopy.cost = Number(itemCopy.cost);
+      itemCopy.order = Number(itemCopy.order);
+      itemCopy.originalStockCount = Number(itemCopy.originalStockCount);
+      itemCopy.soldCount = Number(itemCopy.soldCount);
+      itemCopy.canceledCount = Number(itemCopy.canceledCount);
       // verify the input is valid
       const { title, type, price, description } = itemCopy;
       let errorExist = false;
@@ -147,6 +163,22 @@ const EditMenuDialog = (props) => {
       setApiError(error.message);
     }
     setLoading(false);
+  };
+
+  const onDelete = async () => {
+    try {
+      setLoading(true);
+      await props.onDelete(props.existingItem.id);
+      props.onClose();
+      props.callback();
+    } catch (error) {
+      setApiError(error.message);
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteClick = () => {
+    setDisplayDeleteButton(true);
   };
 
   const handleAlertClose = () => {
@@ -213,6 +245,15 @@ const EditMenuDialog = (props) => {
                 onChange={onItemInputChange}/>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
+              <TextField id='cost' name='cost' label='cost'
+                fullWidth
+                required
+                helperText={inputError['cost']}
+                value={item['cost']}
+                type="number"
+                onChange={onItemInputChange}/>
+            </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
               <FormControl sx={{ width: 300 }}>
                 <InputLabel id="ingredients-label">Ingredients</InputLabel>
                 <Select
@@ -253,6 +294,44 @@ const EditMenuDialog = (props) => {
                 onChange={onItemInputChange}/>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
+              <TextField id='order' name='order' label='order'
+                fullWidth
+                required
+                helperText={inputError['order']}
+                value={item['order']}
+                type="number"
+                onChange={onItemInputChange}/>
+            </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <TextField id='originalStockCount' name='originalStockCount' 
+                label='originalStockCount'
+                fullWidth
+                required
+                helperText={inputError['originalStockCount']}
+                value={item['originalStockCount']}
+                type="number"
+                onChange={onItemInputChange}/>
+            </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <TextField id='soldCount' name='soldCount' label='soldCount'
+                fullWidth
+                required
+                helperText={inputError['soldCount']}
+                value={item['soldCount']}
+                type="number"
+                onChange={onItemInputChange}/>
+            </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <TextField id='canceledCount' name='canceledCount' 
+                label='canceledCount'
+                fullWidth
+                required
+                helperText={inputError['canceledCount']}
+                value={item['canceledCount']}
+                type="number"
+                onChange={onItemInputChange}/>
+            </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
               <FormControlLabel
                 control={<Switch
                   name='isVisibleToCustomer'
@@ -272,6 +351,19 @@ const EditMenuDialog = (props) => {
                 label='Still stocked'
               />
             </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <Button color="error" 
+                variant="outlined"
+                onClick={handleDeleteClick}>Delete</Button>
+              {displayDeleteButton && 
+                <div>
+                  Confirm? : 
+                  <Button color="error" 
+                    variant="outlined"
+                    onClick={onDelete}>Yes</Button>
+                </div>
+              }
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -288,6 +380,7 @@ EditMenuDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   callback: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
   menuTypeList: PropTypes.array.isRequired,
   ingredientList: PropTypes.array.isRequired,
   existingItem: PropTypes.shape({
@@ -296,8 +389,13 @@ EditMenuDialog.propTypes = {
     subTitle: PropTypes.string,
     type: PropTypes.string,
     price: PropTypes.number,
+    cost: PropTypes.number,
     ingredients: PropTypes.array,
     description: PropTypes.string,
+    order: PropTypes.number,
+    originalStockCount: PropTypes.number,
+    soldCount: PropTypes.number,
+    canceledCount: PropTypes.number,
     isVisibleToCustomer: PropTypes.bool,
     isAvailable: PropTypes.bool,
     image: PropTypes.string

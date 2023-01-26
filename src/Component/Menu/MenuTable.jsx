@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import * as api from '../../Firebase/home';
+import * as api from '../../Firebase/menu';
 import { Button, IconButton, Tooltip } from '@mui/material';
 import { DataGrid, GridToolbarContainer, GridToolbarColumnsButton,
   GridToolbarFilterButton, GridToolbarDensitySelector, 
@@ -23,8 +23,13 @@ const MenuTable = () => {
     { field: 'subTitle', headerName: 'Sub Title', width: 150 },
     { field: 'type', headerName: 'Type' },
     { field: 'price', headerName: 'Price', width: 70 },
+    { field: 'cost', headerName: 'Cost', width: 70 },
     { field: 'description', headerName: 'Description', flex: 1 },
     { field: 'ingredients', headerName: 'Ingredients', flex: 1 },
+    { field: 'order', headerName: 'Order', width: 70 },
+    { field: 'originalStockCount', headerName: 'stock', width: 70 },
+    { field: 'soldCount', headerName: 'Sold', width: 70 },
+    { field: 'canceledCount', headerName: 'Canceled', width: 75 },
     { field: 'isVisibleToCustomer', headerName: 'Visible', 
       width: 80, type: 'boolean' },
     { field: 'isAvailable', headerName: 'Available', 
@@ -107,6 +112,7 @@ const MenuTable = () => {
       <EditMenuDialog open={dialogOpen} onClose={handleDialogClose} 
         callback={getMenuList} existingItem={dialogItem}
         onSave={dialogItem ? api.updateMenu : api.addMenu }
+        onDelete={api.deleteMenu}
         menuTypeList={menuTypeList} ingredientList={ingredientList}/>
       {/* <AddMenuDialog open={addMenuDialogOpen} 
         onClose={() => setAddMenuDialogOpen(false)} callback={getMenuList} 

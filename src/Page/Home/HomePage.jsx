@@ -1,5 +1,5 @@
 import React from 'react';
-import * as api from '../../Firebase/home';
+import * as api from '../../Firebase/menu';
 
 import MenuTable from '../../Component/Menu/MenuTable';
 import styles from './home-page.module.scss';
