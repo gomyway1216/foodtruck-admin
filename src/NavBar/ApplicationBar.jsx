@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, List, ListItem, ListItemText, Drawer, 
-  IconButton, Menu, MenuItem, Typography, 
-  Alert, AlertTitle } from '@mui/material';
+  IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Provider/AuthProvider';
-
+import InstantMessage from '../Component/PopUp/Alert';
 
 const ApplicationBar = () => {
   const navigate = useNavigate();
@@ -32,8 +31,12 @@ const ApplicationBar = () => {
       await signOut();
       setAnchorEl(null);
     } catch (e) {
-      console.log('error while signing out!', e);
+      setError(e.message);
     }
+  };
+
+  const handleAlertClose = () => {
+    setError('');
   };
 
   return (
@@ -76,11 +79,8 @@ const ApplicationBar = () => {
                 <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
               }
             </Menu>
-            {error && 
-              <Alert severity="error">
-                <AlertTitle>Error</AlertTitle>
-                {error}
-              </Alert>
+            {error && <InstantMessage message={error}
+              onClose={handleAlertClose} />
             }
           </div>
         </Toolbar>

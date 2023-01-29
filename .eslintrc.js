@@ -25,6 +25,6 @@ module.exports = {
     indent: ['error', 2],
     // we want to avoid useless spaces
     'no-multi-spaces': ['error'],
-    'max-len': ['error', { 'code': 80 }]
+    'max-len': ['error', { 'code': 100 }]
   }
 };

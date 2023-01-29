@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Box, Dialog, DialogActions, DialogContent, 
   DialogTitle, LinearProgress, TextField } from '@mui/material';
-import Alert from '../../Component/PopUp/Alert';
+import InstantMessage from '../../Component/PopUp/Alert';
 
 const defaultItem = {
   id: '',
@@ -60,7 +60,8 @@ export const EditValueDialog = (props) => {
   // Otherwise, the DialogTitle overlaps the TextField
   return (
     <>
-      {apiError && <Alert message={apiError} onClose={handleAlertClose}/>}
+      {apiError && <InstantMessage message={apiError} 
+        onClose={handleAlertClose}/>}
       <Dialog open={open} onClose={() => props.onClose()} fullWidth>
         <DialogTitle>{props.existingItem ? 'Edit Value' 
           : 'Add Value'}</DialogTitle>

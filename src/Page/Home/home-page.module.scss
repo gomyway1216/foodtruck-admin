@@ -13,9 +13,21 @@
 
   .listTables {
     margin-top: 70px;
+    margin-bottom: 70px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+
+    .title {
+      font-size: x-large;
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+  }
+
+  .schedule {
+    margin-top: 50px;
 
     .title {
       font-size: x-large;

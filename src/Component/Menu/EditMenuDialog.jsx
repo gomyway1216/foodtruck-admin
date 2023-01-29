@@ -5,7 +5,7 @@ import { Button, Box, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
   LinearProgress, MenuItem, OutlinedInput, Select, 
   Switch, TextField } from '@mui/material';
 import ImageUpload from '../Image/ImageUpload';
-import Alert from '../../Component/PopUp/Alert';
+import InstantMessage from '../PopUp/Alert';
 
 const defaultItem = {
   title: '',
@@ -187,7 +187,8 @@ const EditMenuDialog = (props) => {
 
   return (
     <div>
-      {apiError && <Alert message={apiError} onClose={handleAlertClose}/>}
+      {apiError && <InstantMessage message={apiError} 
+        onClose={handleAlertClose}/>}
       <Dialog open={open} onClose={() => props.onClose()} fullWidth>
         <DialogTitle>{props.existingItem ? 'Edit Value' 
           : 'Add Value'}</DialogTitle>
