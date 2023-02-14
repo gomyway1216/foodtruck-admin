@@ -38,6 +38,7 @@ export const getScheduleForWeek = async () => {
       start: doc.data().start.toDate(),
       end: doc.data().end.toDate(),
       location: doc.data().location,
+      mapUrl: doc.data().mapUrl,
       description: doc.data().description,
       disabled: doc.data().disabled,
       color: doc.data().color,
@@ -64,6 +65,7 @@ export const getScheduleWithRange = async (dateRange) => {
       start: doc.data().start.toDate(),
       end: doc.data().end.toDate(),
       location: doc.data().location,
+      mapUrl: doc.data().mapUrl,
       description: doc.data().description,
       disabled: doc.data().disabled,
       color: doc.data().color,
@@ -83,6 +85,7 @@ export const addSchedule = async (item) => {
     start: item.start,
     end: item.end,
     location: item.location,
+    mapUrl: item.mapUrl,
     description: item.description
   };
 
@@ -118,6 +121,7 @@ export const updateSchedule = async (item) => {
     start: item.start,
     end: item.end,
     location: item.location,
+    mapUrl: item.mapUrl,
     description: item.description
   };
 

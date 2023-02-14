@@ -205,6 +205,7 @@ const EditMenuDialog = (props) => {
               <TextField id='title' name='title' label='title'
                 fullWidth
                 required
+                error={inputError['title'] !== ''}
                 helperText={inputError['title']}
                 value={item['title']} 
                 onChange={onItemInputChange}/>
@@ -212,6 +213,7 @@ const EditMenuDialog = (props) => {
             <Grid item={true} xs={12} sm={12} md={12}>
               <TextField id='subTitle' name='subTitle' label='Sub Title'
                 fullWidth
+                error={inputError['subTitle'] !== ''}
                 helperText={inputError['subTitle']}
                 value={item['subTitle']} 
                 onChange={onItemInputChange}/>
@@ -233,13 +235,15 @@ const EditMenuDialog = (props) => {
                       value={type.name}>{type.name}</MenuItem>
                   )}
                 </Select>
-                <FormHelperText>{inputError['type']}</FormHelperText>
+                <FormHelperText error={inputError['type'] !== ''}
+                >{inputError['type']}</FormHelperText>
               </FormControl>
             </Grid>
             <Grid item={true} xs={12} sm={12} md={12}>
               <TextField id='price' name='price' label='price'
                 fullWidth
                 required
+                error={inputError['price'] !== ''}
                 helperText={inputError['price']}
                 value={item['price']}
                 type="number"
@@ -249,6 +253,7 @@ const EditMenuDialog = (props) => {
               <TextField id='cost' name='cost' label='cost'
                 fullWidth
                 required
+                error={inputError['cost'] !== ''}
                 helperText={inputError['cost']}
                 value={item['cost']}
                 type="number"
@@ -290,6 +295,7 @@ const EditMenuDialog = (props) => {
               <TextField id='description' name='description' label='Description'
                 fullWidth
                 required
+                error={inputError['description'] !== ''}
                 helperText={inputError['description']}
                 value={item['description']} 
                 onChange={onItemInputChange}/>
@@ -298,6 +304,7 @@ const EditMenuDialog = (props) => {
               <TextField id='order' name='order' label='order'
                 fullWidth
                 required
+                error={inputError['order'] !== ''}
                 helperText={inputError['order']}
                 value={item['order']}
                 type="number"
@@ -308,6 +315,7 @@ const EditMenuDialog = (props) => {
                 label='originalStockCount'
                 fullWidth
                 required
+                error={inputError['originalStockCount'] !== ''}
                 helperText={inputError['originalStockCount']}
                 value={item['originalStockCount']}
                 type="number"
@@ -317,6 +325,7 @@ const EditMenuDialog = (props) => {
               <TextField id='soldCount' name='soldCount' label='soldCount'
                 fullWidth
                 required
+                error={inputError['soldCount'] !== ''}
                 helperText={inputError['soldCount']}
                 value={item['soldCount']}
                 type="number"
@@ -327,6 +336,7 @@ const EditMenuDialog = (props) => {
                 label='canceledCount'
                 fullWidth
                 required
+                error={inputError['canceledCount'] !== ''}
                 helperText={inputError['canceledCount']}
                 value={item['canceledCount']}
                 type="number"

@@ -73,6 +73,7 @@ export const EditValueDialog = (props) => {
             autoFocus
             fullWidth
             required
+            error={inputError !== ''}
             helperText={inputError}
             value={item.name} 
             onChange={onInputChange}

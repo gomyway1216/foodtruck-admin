@@ -65,6 +65,12 @@ const Calendar = () => {
               required: true, errMsg: 'Please fill in the location' }
           },
           {
+            name: 'mapUrl',
+            type: 'input',
+            config: { label: 'Map URL', 
+              required: true, errMsg: 'Please fill in the map URL' }
+          },
+          {
             name: 'description',
             type: 'input',
             config: { label: 'Description', multiline: true, rows: 4 }
