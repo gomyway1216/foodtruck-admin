@@ -18,8 +18,8 @@ const MenuTable = () => {
 
   // the default width is 100px
   const columns = [
-    { field: 'id', headerName: 'ID', width: 80 },
-    { field: 'title', headerName: 'Title', width: 150 },
+    // { field: 'id', headerName: 'ID', width: 80 },
+    { field: 'title', headerName: 'Title', width: 230 },
     { field: 'subTitle', headerName: 'Sub Title', width: 150 },
     { field: 'type', headerName: 'Type' },
     { field: 'price', headerName: 'Price', width: 70 },
@@ -27,13 +27,13 @@ const MenuTable = () => {
     { field: 'description', headerName: 'Description', flex: 1 },
     { field: 'ingredients', headerName: 'Ingredients', flex: 1 },
     { field: 'order', headerName: 'Order', width: 70 },
-    { field: 'originalStockCount', headerName: 'stock', width: 70 },
-    { field: 'soldCount', headerName: 'Sold', width: 70 },
-    { field: 'canceledCount', headerName: 'Canceled', width: 75 },
+    // { field: 'originalStockCount', headerName: 'stock', width: 70 },
+    // { field: 'soldCount', headerName: 'Sold', width: 70 },
+    // { field: 'canceledCount', headerName: 'Canceled', width: 75 },
     { field: 'isVisibleToCustomer', headerName: 'Visible', 
       width: 80, type: 'boolean' },
-    { field: 'isAvailable', headerName: 'Available', 
-      width: 80, type: 'boolean' },
+    // { field: 'isAvailable', headerName: 'Available', 
+    //   width: 80, type: 'boolean' },
     {
       field: 'action',
       headerName: 'Edit',

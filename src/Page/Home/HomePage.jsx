@@ -9,7 +9,7 @@ const HomePage = () => {
   return (
     <div className={styles.adminPageRoot}>
       <div className={styles.menuTable}>
-        <div className={styles.title}>Menu</div>
+        <div className={styles.title}>Menu List</div>
         <MenuTable />
       </div>
       <div className={styles.listTables}>
