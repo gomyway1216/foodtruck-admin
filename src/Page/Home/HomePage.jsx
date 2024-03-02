@@ -1,9 +1,11 @@
 import React from 'react';
 import * as api from '../../Firebase/menu';
+import * as feedbackApi from '../../Firebase/feedback';
 import MenuTable from '../../Component/Menu/MenuTable';
 import GeneralTable from '../../Component/Table/GeneralTable';
 import Calendar from '../../Component/Calendar/Calendar';
 import styles from './home-page.module.scss';
+import FeedbackTable from '../../Component/Table/FeedbackTable';
 
 const HomePage = () => {
   return (
@@ -23,6 +25,10 @@ const HomePage = () => {
           <GeneralTable getList={api.getIngredientList} 
             onAdd={api.addIngredient} onUpdate={api.updateIngredient} />
         </div>
+      </div>
+      <div className={styles.feedbackTable}>
+        <div className={styles.title}>Feedback List</div>
+        <FeedbackTable getList={feedbackApi.getFeedbackList}/>
       </div>
       <div className={styles.schedule}>
         <div className={styles.title}>Schedule</div>
