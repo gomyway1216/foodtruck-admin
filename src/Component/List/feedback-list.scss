@@ -1,0 +1,108 @@
+.feedback-list {
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .feedback-content {
+      flex-grow: 1;
+
+      .feedback-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .feedback-name {
+          font-weight: bold;
+        }
+
+        .feedback-title-actions {
+          display: flex;
+          align-items: center;
+
+          .icon-placeholder {
+            width: 24px;
+            height: 24px;
+            margin-left: 8px;
+          }
+
+          .rating-star {
+            color: gold;
+            margin-right: 4px;
+          }
+      
+          .normal-indicator {
+            color: blue;
+            margin-left: 8px;
+          }
+      
+          .urgent-indicator {
+            color: red;
+            margin-left: 8px;
+          }
+      
+          .overdue-indicator {
+            color: red;
+            margin-left: 8px;
+          }
+      
+          .responded-indicator {
+            color: green;
+            margin-left: 8px;
+          }
+        }
+      }
+
+      .feedback-title {
+        margin-right: 8px;
+      }
+
+      .feedback-body {
+        display: -webkit-box;       // Use the webkit box model for line clamping
+        -webkit-line-clamp: 2;     // Clamp text after 2 lines
+        -webkit-box-orient: vertical;
+        overflow: hidden;          // Hide overflow
+        text-overflow: ellipsis;   // Add ellipsis to overflow
+        margin-top: 4px;
+        line-height: 1.2;          // Adjust line height as needed for your design
+        max-height: 2.4em;         // 2 lines of text, adjust as needed based on your line-height
+        width: 100%;               // Ensure the width does not exceed parent container
+      }
+
+      .feedback-bottom-row {
+        display: flex;
+        margin-top: 4px;
+        justify-content: space-between;
+
+        .feedback-details {
+          display: flex;
+          flex-grow: 1;
+          
+          justify-content: space-between;
+        }
+
+        .feedback-email {
+          margin: 0;
+          padding: 0;
+          margin-left: 8px;
+        }
+
+        .email-button-placeholder {
+          display: inline-block;
+          width: 24px;
+          height: 24px;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+}

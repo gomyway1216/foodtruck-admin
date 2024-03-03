@@ -17,6 +17,9 @@ export const getFeedbackList = async () => {
       title: doc.data().title,
       body: doc.data().body,
       rating: doc.data().rating,
+      creationTime: doc.data().creationTime.toDate(),
+      eventLocation: doc.data().eventLocation,
+      hasResponded: doc.data().hasResponded
     };
     response.push(feedback);
   });

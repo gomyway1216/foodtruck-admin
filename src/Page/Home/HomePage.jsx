@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as api from '../../Firebase/menu';
 import * as feedbackApi from '../../Firebase/feedback';
 import MenuTable from '../../Component/Menu/MenuTable';
@@ -6,8 +6,21 @@ import GeneralTable from '../../Component/Table/GeneralTable';
 import Calendar from '../../Component/Calendar/Calendar';
 import styles from './home-page.module.scss';
 import FeedbackTable from '../../Component/Table/FeedbackTable';
+import useIsMobile from '../../Hook/useIsMobile';
+import FeedbackList from '../../Component/List/FeedbackList';
 
 const HomePage = () => {
+  const [feedbackList, setFeedbackList] = useState([]);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const list = await feedbackApi.getFeedbackList();
+      setFeedbackList(list);
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className={styles.adminPageRoot}>
       <div className={styles.menuTable}>
@@ -28,7 +41,8 @@ const HomePage = () => {
       </div>
       <div className={styles.feedbackTable}>
         <div className={styles.title}>Feedback List</div>
-        <FeedbackTable getList={feedbackApi.getFeedbackList}/>
+        {isMobile && <FeedbackList valueList={feedbackList}/>}
+        {!isMobile && <FeedbackTable getList={feedbackApi.getFeedbackList}/>}
       </div>
       <div className={styles.schedule}>
         <div className={styles.title}>Schedule</div>
