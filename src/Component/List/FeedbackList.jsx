@@ -1,7 +1,7 @@
-import React,{ useState } from 'react';
-import { List, ListItem, IconButton, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { List, ListItem, IconButton, TextField, Typography } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
-import AccessTimeIcon from '@mui/icons-material/AccessTime'; 
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckIcon from '@mui/icons-material/Check';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
@@ -12,6 +12,16 @@ import './feedback-list.scss';
 const FeedbackList = ({ valueList }) => {
   const [dialogItem, setDialogItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Function to filter items based on the search term
+  const filteredItems = valueList.filter(item => {
+    return Object.values(item).some(value => {
+      // Check if value is defined and is not null before calling toString()
+      return value !== undefined && value !== null && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+    });
+  });
+
 
   const handleItemClick = (item) => {
     setDialogItem(item);
@@ -27,14 +37,14 @@ const FeedbackList = ({ valueList }) => {
   const getTimeUrgencyIndicator = (email, creationTime, hasResponded) => {
     const iconPlaceholder = <div className="icon-placeholder"></div>;
 
-    if(!isValidEmail(email)) {
+    if (!isValidEmail(email)) {
       return iconPlaceholder;
     }
 
     if (hasResponded) {
       return <CheckIcon className="responded-indicator" />;
     }
-    
+
     const currentTime = new Date();
     const creationDate = new Date(creationTime);
     const hoursPassed = (currentTime - creationDate) / (1000 * 60 * 60);
@@ -53,10 +63,10 @@ const FeedbackList = ({ valueList }) => {
     const emailButtonPlaceholder = (
       <div className="email-button-placeholder"></div>
     );
-  
+
     // Return either the IconButton or the placeholder based on the email validity
     return isValidEmail(email) ? (
-      <IconButton edge="end" aria-label="email" 
+      <IconButton edge="end" aria-label="email"
         onClick={() => handleEmailClick(email, item)} className="feedback-email">
         <EmailIcon />
       </IconButton>
@@ -81,17 +91,29 @@ const FeedbackList = ({ valueList }) => {
   const renderRating = (rating) => {
     let stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push(i <= rating ? 
-        <StarIcon key={i} className="rating-star" /> 
+      stars.push(i <= rating ?
+        <StarIcon key={i} className="rating-star" />
         : <StarOutlineIcon key={i} className="rating-star" />);
     }
     return <div className="rating">{stars}</div>;
   };
 
+  const handleSearchChange = (event) => {
+    console.log(event.target.value);
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <>
+      <TextField
+        label="Search Feedback"
+        variant="outlined"
+        fullWidth
+        onChange={handleSearchChange}
+        style={{ margin: '20px 0' }}
+      />
       <List dense className="feedback-list">
-        {valueList.map((item) => (
+        {filteredItems.map((item) => (
           <ListItem className="list-item" key={item.id} onClick={() => handleItemClick(item)}>
             <div className="feedback-content">
               <div className="feedback-header">
@@ -102,11 +124,11 @@ const FeedbackList = ({ valueList }) => {
                 </div>
               </div>
               <Typography variant="body2" color="textSecondary" className="feedback-title">{item.title}</Typography>
-              <Typography variant="body2" 
+              <Typography variant="body2"
                 color="textSecondary" className="feedback-body">{item.body}</Typography>
               <div className="feedback-bottom-row">
                 <div className="feedback-details">
-                  <Typography variant="body2" 
+                  <Typography variant="body2"
                     color="textSecondary" className="feedback-location">{item.eventLocation}</Typography>
                   <Typography variant="body2" color="textSecondary" className="feedback-time">
                     {new Date(item.creationTime).toLocaleString([], {
