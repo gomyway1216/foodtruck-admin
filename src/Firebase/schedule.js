@@ -1,19 +1,21 @@
 import * as fbConnect from './firebaseConnect';
-import { addDoc, collection, deleteDoc, getDoc, getDocs, doc, Timestamp, 
-  query, updateDoc, where } from 'firebase/firestore'; 
+import {
+  addDoc, collection, deleteDoc, getDoc, getDocs, doc, Timestamp,
+  query, updateDoc, where
+} from 'firebase/firestore';
 
 const DOC_ID_MISSING_ERR_MSG = 'Data is not saved correctly in server.'
-        + ' Document id is not returned.';
+  + ' Document id is not returned.';
 
 export const getDbAccess = () => {
   return fbConnect.exportDbAccess();
 };
 
 export const getSchedule = async (eventId) => {
-  const docRef = query(collection(getDbAccess(), 'schedule'), 
+  const docRef = query(collection(getDbAccess(), 'schedule'),
     where('eventId', '==', eventId));
   const querySnapshot = await getDocs(docRef);
-  if(querySnapshot.docs.length !== 1) {
+  if (querySnapshot.docs.length !== 1) {
     throw new Error('Querying data with eventId: ' + eventId + 'is invalid!');
   }
   return querySnapshot.docs[0];
@@ -21,13 +23,13 @@ export const getSchedule = async (eventId) => {
 
 export const getScheduleForWeek = async () => {
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 7);
   const date1 = Timestamp.fromDate(today);
   const date2 = Timestamp.fromDate(tomorrow);
   const response = [];
-  const q = query(collection(getDbAccess(), 'schedule'), 
+  const q = query(collection(getDbAccess(), 'schedule'),
     where('start', '>=', date1), where('start', '<=', date2));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
@@ -54,7 +56,7 @@ export const getScheduleWithRange = async (dateRange) => {
   const date1 = Timestamp.fromDate(dateRange.start);
   const date2 = Timestamp.fromDate(dateRange.end);
   const response = [];
-  const q = query(collection(getDbAccess(), 'schedule'), 
+  const q = query(collection(getDbAccess(), 'schedule'),
     where('start', '>=', date1), where('start', '<=', date2));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
@@ -78,7 +80,6 @@ export const getScheduleWithRange = async (dateRange) => {
 };
 
 export const addSchedule = async (item) => {
-  console.log('addSchedule item', item);
   const insertingSchedule = {
     eventId: item.event_id,
     title: item.title,
@@ -89,23 +90,23 @@ export const addSchedule = async (item) => {
     description: item.description
   };
 
-  if(item.disabled) {
+  if (item.disabled) {
     insertingSchedule.disabled = item.disabled;
   }
 
-  if(item.color) {
+  if (item.color) {
     insertingSchedule.color = item.color;
   }
 
-  if(item.editable) {
+  if (item.editable) {
     insertingSchedule.editable = item.editable;
   }
 
-  if(item.deletable) {
+  if (item.deletable) {
     insertingSchedule.deletable = item.deletable;
   }
 
-  const docRef = await addDoc(collection(getDbAccess(), 'schedule'), 
+  const docRef = await addDoc(collection(getDbAccess(), 'schedule'),
     insertingSchedule);
 
   if (!docRef.id) {
@@ -114,7 +115,6 @@ export const addSchedule = async (item) => {
 };
 
 export const updateSchedule = async (item) => {
-  console.log('updateSchedule item', item);
   const updatingSchedule = {
     eventId: item.event_id,
     title: item.title,
@@ -125,19 +125,19 @@ export const updateSchedule = async (item) => {
     description: item.description
   };
 
-  if(item.disabled) {
+  if (item.disabled) {
     updatingSchedule.disabled = item.disabled;
   }
 
-  if(item.color) {
+  if (item.color) {
     updatingSchedule.color = item.color;
   }
 
-  if(item.editable) {
+  if (item.editable) {
     updatingSchedule.editable = item.editable;
   }
 
-  if(item.deletable) {
+  if (item.deletable) {
     updatingSchedule.deletable = item.deletable;
   }
 

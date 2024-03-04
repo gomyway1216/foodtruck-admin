@@ -39,22 +39,22 @@
             color: gold;
             margin-right: 4px;
           }
-      
+
           .normal-indicator {
             color: blue;
             margin-left: 8px;
           }
-      
+
           .urgent-indicator {
             color: red;
             margin-left: 8px;
           }
-      
+
           .overdue-indicator {
             color: red;
             margin-left: 8px;
           }
-      
+
           .responded-indicator {
             color: green;
             margin-left: 8px;
@@ -67,27 +67,39 @@
       }
 
       .feedback-body {
-        display: -webkit-box;       // Use the webkit box model for line clamping
-        -webkit-line-clamp: 2;     // Clamp text after 2 lines
+        display: -webkit-box; // Use the webkit box model for line clamping
+        -webkit-line-clamp: 2; // Clamp text after 2 lines
         -webkit-box-orient: vertical;
-        overflow: hidden;          // Hide overflow
-        text-overflow: ellipsis;   // Add ellipsis to overflow
+        overflow: hidden; // Hide overflow
+        text-overflow: ellipsis; // Add ellipsis to overflow
         margin-top: 4px;
-        line-height: 1.2;          // Adjust line height as needed for your design
-        max-height: 2.4em;         // 2 lines of text, adjust as needed based on your line-height
-        width: 100%;               // Ensure the width does not exceed parent container
+        line-height: 1.2; // Adjust line height as needed for your design
+        max-height: 2.4em; // 2 lines of text, adjust as needed based on your line-height
+        width: 100%; // Ensure the width does not exceed parent container
       }
 
-      .feedback-bottom-row {
+
+      .feedback-details {
         display: flex;
         margin-top: 4px;
-        justify-content: space-between;
+        flex-grow: 1;
 
-        .feedback-details {
+        justify-content: space-between;
+      }
+
+      .feedback-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+
+        .feedback-tags {
           display: flex;
-          flex-grow: 1;
-          
-          justify-content: space-between;
+          justify-content: flex-start;
+          margin-right: 8px;
+
+          .feedback-tag {
+            margin-right: 4px;
+          }
         }
 
         .feedback-email {
@@ -105,4 +117,8 @@
       }
     }
   }
+}
+
+.feedback-search {
+  display: flex;
 }

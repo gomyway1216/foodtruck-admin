@@ -11,12 +11,16 @@ import FeedbackList from '../../Component/List/FeedbackList';
 
 const HomePage = () => {
   const [feedbackList, setFeedbackList] = useState([]);
+  const [feedbackTypeList, setFeedbackTypeList] = useState([]);
   const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchData = async () => {
       const list = await feedbackApi.getFeedbackList();
       setFeedbackList(list);
+
+      const typeList = await feedbackApi.getFeedbackTypeList();
+      setFeedbackTypeList(typeList);
     };
     fetchData();
   }, []);
@@ -30,19 +34,19 @@ const HomePage = () => {
       <div className={styles.listTables}>
         <div>
           <div className={styles.title}>Menu Type</div>
-          <GeneralTable getList={api.getMenuTypeList} 
+          <GeneralTable getList={api.getMenuTypeList}
             onAdd={api.addMenuType} onUpdate={api.updateMenuType} />
         </div>
         <div>
           <div className={styles.title}>Ingredient</div>
-          <GeneralTable getList={api.getIngredientList} 
+          <GeneralTable getList={api.getIngredientList}
             onAdd={api.addIngredient} onUpdate={api.updateIngredient} />
         </div>
       </div>
       <div className={styles.feedbackTable}>
         <div className={styles.title}>Feedback List</div>
-        {isMobile && <FeedbackList valueList={feedbackList}/>}
-        {!isMobile && <FeedbackTable getList={feedbackApi.getFeedbackList}/>}
+        {isMobile && <FeedbackList valueList={feedbackList} tagTypeList={feedbackTypeList} />}
+        {!isMobile && <FeedbackTable getList={feedbackApi.getFeedbackList} />}
       </div>
       <div className={styles.schedule}>
         <div className={styles.title}>Schedule</div>
