@@ -1,0 +1,22 @@
+.schedule-page-root {
+  margin-top: 100px;
+  padding-left: 5%;
+  padding-right: 5%;
+
+  .schedule {
+    margin-top: 50px;
+
+    .title {
+      font-size: x-large;
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .schedule-page-root {
+    margin-top: 80px;
+  }
+}
