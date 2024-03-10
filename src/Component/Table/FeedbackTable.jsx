@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, IconButton, Tooltip } from '@mui/material';
-import { DataGrid, GridToolbarContainer, GridToolbarColumnsButton, 
-  GridToolbarFilterButton, GridToolbarDensitySelector, 
-  GridToolbarExport } from '@mui/x-data-grid';
+import { Button, Tooltip } from '@mui/material';
+import {
+  DataGrid, GridToolbarContainer, GridToolbarColumnsButton,
+  GridToolbarFilterButton, GridToolbarDensitySelector,
+  GridToolbarExport
+} from '@mui/x-data-grid';
 import ReplayIcon from '@mui/icons-material/Replay';
-import EmailIcon from '@mui/icons-material/Email';
+import EmailButton from '../Feedback/EmailButton';
+import TimeUrgencyIndicator from '../Feedback/TimeUrgencyIndicator';
 import ViewValueDialog from './ViewValueDialog';
 import styles from './general-table.module.scss';
 
@@ -22,28 +25,39 @@ const FeedbackTable = (props) => {
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 1,
+      width: 80,
       type: 'number', // Specify the column type as 'number'
     },
-    { field: 'action', 
-      headerName: 'Edit',
+    { field: 'creationTime', headerName: 'Creation Time', flex: 1 },
+    { field: 'eventLocation', headerName: 'Event Location', flex: 1 },
+    { field: 'tags', headerName: 'Tags', flex: 1 },
+    {
+      field: 'responding',
+      headerName: 'Responding',
+      width: 100,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <Tooltip title="Responding status">
+            <TimeUrgencyIndicator
+              email={params.row.email}
+              creationTime={params.row.creationTime}
+              hasResponded={params.row.hasResponded} />
+          </Tooltip>
+        );
+
+      }
+    },
+    {
+      field: 'action',
+      headerName: 'Email',
       width: 80,
       sortable: false,
       renderCell: (params) => {
-        const onClick = (e) => {
-          e.stopPropagation(); // Prevent row click
-          const email = params.row.email;
-          const subject = encodeURIComponent('Tokachi Musubi');
-          const body = encodeURIComponent(`Hello, ${params.row.name}`);
-          window.open(`mailto:${email}?subject=${subject}&body=${body}`);
-        };
-
         if (params.row.email) {
           return (
             <Tooltip title="Send Email">
-              <IconButton aria-label="send email" onClick={onClick} color="primary">
-                <EmailIcon />
-              </IconButton>
+              <EmailButton email={params.row.email} />
             </Tooltip>
           );
         } else {
@@ -84,7 +98,7 @@ const FeedbackTable = (props) => {
   return (
     <div className={styles.menuTableRoot}>
       <div className={styles.commands}>
-        <Button onClick={getValueList} variant="outlined" 
+        <Button onClick={getValueList} variant="outlined"
           startIcon={<ReplayIcon />}>Update</Button>
       </div>
       <DataGrid

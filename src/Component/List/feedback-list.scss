@@ -28,37 +28,6 @@
         .feedback-title-actions {
           display: flex;
           align-items: center;
-
-          .icon-placeholder {
-            width: 24px;
-            height: 24px;
-            margin-left: 8px;
-          }
-
-          .rating-star {
-            color: gold;
-            margin-right: 4px;
-          }
-
-          .normal-indicator {
-            color: blue;
-            margin-left: 8px;
-          }
-
-          .urgent-indicator {
-            color: red;
-            margin-left: 8px;
-          }
-
-          .overdue-indicator {
-            color: red;
-            margin-left: 8px;
-          }
-
-          .responded-indicator {
-            color: green;
-            margin-left: 8px;
-          }
         }
       }
 
@@ -100,19 +69,6 @@
           .feedback-tag {
             margin-right: 4px;
           }
-        }
-
-        .feedback-email {
-          margin: 0;
-          padding: 0;
-          margin-left: 8px;
-        }
-
-        .email-button-placeholder {
-          display: inline-block;
-          width: 24px;
-          height: 24px;
-          margin-left: 8px;
         }
       }
     }

@@ -26,7 +26,11 @@ const FeedbackPage = () => {
     <div className='feedback-page-root'>
       <div>
         <div className='title'>Feedback</div>
-        {isMobile && <FeedbackList valueList={feedbackList} tagTypeList={feedbackTypeList} />}
+        {isMobile && <FeedbackList
+          valueList={feedbackList}
+          tagTypeList={feedbackTypeList}
+          setValueList={setFeedbackList}
+        />}
         {!isMobile && <FeedbackTable getList={feedbackApi.getFeedbackList} />}
       </div>
     </div>

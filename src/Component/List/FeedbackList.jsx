@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import {
   Button, Box, Chip, Drawer, FormControl, List, ListItem, IconButton,
-  InputLabel, Select, Slider, MenuItem, TextField, Typography, Menu
+  InputLabel, Select, Slider, MenuItem, TextField, Typography
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import EmailIcon from '@mui/icons-material/Email';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CheckIcon from '@mui/icons-material/Check';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import StarIcon from '@mui/icons-material/Star';
 import PropTypes from 'prop-types';
 import ViewValueDialog from '../Table/ViewValueDialog';
+import TimeUrgencyIndicator from '../Feedback/TimeUrgencyIndicator';
+import Rating from '../Feedback/Rating';
+import EmailButton from '../Feedback/EmailButton';
 import './feedback-list.scss';
 
-const FeedbackList = ({ valueList, tagTypeList }) => {
+const FeedbackList = ({ valueList, tagTypeList, setValueList }) => {
   const [dialogItem, setDialogItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,7 +54,6 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
   const handleSortOrderChange = (event) => {
     setSortOrder(event.target.value);
   };
-
 
   // Integrated filter, search, and sort function
   const applyFilterSearchAndSort = (items) => {
@@ -150,71 +147,6 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
     setDialogItem(null);
   };
 
-  // Function to determine the color or icon for time urgency
-  const getTimeUrgencyIndicator = (email, creationTime, hasResponded) => {
-    const iconPlaceholder = <div className="icon-placeholder"></div>;
-
-    if (!isValidEmail(email)) {
-      return iconPlaceholder;
-    }
-
-    if (hasResponded) {
-      return <CheckIcon className="responded-indicator" />;
-    }
-
-    const currentTime = new Date();
-    const creationDate = new Date(creationTime);
-    const hoursPassed = (currentTime - creationDate) / (1000 * 60 * 60);
-
-    if (hoursPassed > 24) {
-      return <AccessTimeIcon className="overdue-indicator" />;
-    } else if (hoursPassed > 12) {
-      return <AccessTimeIcon className="urgent-indicator" />;
-    } else {
-      return <AccessTimeIcon className="normal-indicator" />;
-    }
-  };
-
-  const renderEmailButton = (email, item) => {
-    // Define the placeholder with the same dimensions as the IconButton
-    const emailButtonPlaceholder = (
-      <div className="email-button-placeholder"></div>
-    );
-
-    // Return either the IconButton or the placeholder based on the email validity
-    return isValidEmail(email) ? (
-      <IconButton edge="end" aria-label="email"
-        onClick={() => handleEmailClick(email, item)} className="feedback-email">
-        <EmailIcon />
-      </IconButton>
-    ) : emailButtonPlaceholder;
-  };
-
-  const isValidEmail = (email) => {
-    // This regular expression covers most common email patterns
-    // eslint-disable-next-line max-len
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  };
-
-  // Function to handle email click
-  const handleEmailClick = (email, item) => {
-    const subject = encodeURIComponent('Subject for the email');
-    const body = encodeURIComponent('Hello,');
-    window.open(`mailto:${email}?subject=${subject}&body=${body}`);
-  };
-
-  // Function to render stars for the rating
-  const renderRating = (rating) => {
-    let stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(i <= rating ?
-        <StarIcon key={i} className="rating-star" />
-        : <StarOutlineIcon key={i} className="rating-star" />);
-    }
-    return <div className="rating">{stars}</div>;
-  };
-
   const rengderTags = (tags) => {
     return tags.map((tag, index) => (
       <Chip key={index} label={tag} className="feedback-tag" size="small" />
@@ -233,6 +165,12 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
     setEndDate(null);
   };
 
+  const handleUpdateFeedback = (updatedFeedback) => {
+    setValueList(currentList =>
+      currentList.map(item => item.id === updatedFeedback.id ? { ...item, ...updatedFeedback } : item)
+    );
+  };
+
   return (
     <div>
       <div className="feedback-search">
@@ -245,6 +183,9 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
           fullWidth
           onChange={handleSearchChange}
           style={{ margin: '20px 0' }}
+          // this prevent Chrome from autofilling the input
+          name="search-feedback-field"
+          id="search-feedback-field"
         />
       </div>
       <Drawer
@@ -329,13 +270,6 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
             </FormControl>
           }
 
-          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateRangePicker
-              value={value}
-              onChange={(newValue) => setValue(newValue)}
-            />
-          </LocalizationProvider> */}
-
           {/* Rating range filter */}
           {filterField === 'rating' &&
             <FormControl fullWidth margin="normal" style={{ marginTop: '0' }}>
@@ -392,7 +326,6 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
             </Box>
           }
 
-
           {/* Sort field selection */}
           <Box width="100%" marginBottom={2}>
             <FormControl fullWidth margin="normal">
@@ -445,8 +378,9 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
               <div className="feedback-header">
                 <Typography variant="subtitle1" className="feedback-name">{item.name}</Typography>
                 <div className="feedback-title-actions">
-                  {renderRating(item.rating)}
-                  {getTimeUrgencyIndicator(item.email, item.creationTime, item.hasResponded)}
+                  <Rating rating={item.rating} />
+                  <TimeUrgencyIndicator email={item.email}
+                    creationTime={item.creationTime} hasResponded={item.hasResponded} />
                 </div>
               </div>
               <Typography variant="body2" color="textSecondary" className="feedback-title">{item.title}</Typography>
@@ -469,13 +403,14 @@ const FeedbackList = ({ valueList, tagTypeList }) => {
                 <div className='feedback-tags'>
                   {rengderTags(item.tags)}
                 </div>
-                {renderEmailButton(item.email, item)}
+                <EmailButton email={item.email} />
               </div>
             </div>
           </ListItem>
         ))}
       </List>
-      <ViewValueDialog open={dialogOpen} onClose={handleDialogClose} item={dialogItem} style={{ marginTop: '20px' }} />
+      <ViewValueDialog open={dialogOpen} onClose={handleDialogClose}
+        item={dialogItem} style={{ marginTop: '20px' }} onUpdateFeedback={handleUpdateFeedback} />
     </div>
   );
 };
@@ -493,6 +428,7 @@ FeedbackList.propTypes = {
     hasResponded: PropTypes.bool,
     tags: PropTypes.arrayOf(PropTypes.string)
   })),
+  setValueList: PropTypes.func.isRequired,
   tagTypeList: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string
