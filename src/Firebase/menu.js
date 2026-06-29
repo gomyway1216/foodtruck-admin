@@ -88,6 +88,8 @@ export const getMenuList = async () => {
       ingredients: menuDoc.data().ingredients,
       image: menuDoc.data().image,
       isVisibleToCustomer: menuDoc.data().isVisibleToCustomer,
+      isPriceVisibleToCustomer:
+        menuDoc.data().isPriceVisibleToCustomer !== false,
       isAvailable: menuDoc.data().isAvailable,
       order: menuDoc.data().order, // order of the food displayed
       originalStockCount: menuDoc.data().originalStockCount,
@@ -119,6 +121,8 @@ export const getPublicMenuList = async () => {
       description: menuDoc.data().description,
       ingredients: menuDoc.data().ingredients,
       image: menuDoc.data().image,
+      isPriceVisibleToCustomer:
+        menuDoc.data().isPriceVisibleToCustomer !== false,
       isAvailable: menuDoc.data().isAvailable,
       order: menuDoc.data().order, // order of the food displayed
       originalStockCount: menuDoc.data().originalStockCount,
@@ -141,6 +145,7 @@ export const addMenu = async (item) => {
     ingredients: item.ingredients,
     image: item.image,
     isVisibleToCustomer: item.isVisibleToCustomer,
+    isPriceVisibleToCustomer: item.isPriceVisibleToCustomer !== false,
     isAvailable: item.isAvailable,
     order: item.order, // order of the food displayed
     originalStockCount: item.originalStockCount,
@@ -164,6 +169,7 @@ export const updateMenu = async (item) => {
     ingredients: item.ingredients,
     image: item.image,
     isVisibleToCustomer: item.isVisibleToCustomer,
+    isPriceVisibleToCustomer: item.isPriceVisibleToCustomer !== false,
     isAvailable: item.isAvailable,
     order: item.order, // order of the food displayed
     originalStockCount: item.originalStockCount,

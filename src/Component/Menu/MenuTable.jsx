@@ -23,6 +23,8 @@ const MenuTable = () => {
     { field: 'subTitle', headerName: 'Sub Title', width: 150 },
     { field: 'type', headerName: 'Type' },
     { field: 'price', headerName: 'Price', width: 70 },
+    { field: 'isPriceVisibleToCustomer', headerName: 'Price Visible',
+      width: 110, type: 'boolean' },
     { field: 'cost', headerName: 'Cost', width: 70 },
     { field: 'description', headerName: 'Description', flex: 1 },
     { field: 'ingredients', headerName: 'Ingredients', flex: 1 },
