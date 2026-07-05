@@ -89,7 +89,7 @@ export const getMenuList = async () => {
       image: menuDoc.data().image,
       isVisibleToCustomer: menuDoc.data().isVisibleToCustomer,
       isPriceVisibleToCustomer:
-        menuDoc.data().isPriceVisibleToCustomer !== false,
+        menuDoc.data().isPriceVisibleToCustomer ?? true,
       isAvailable: menuDoc.data().isAvailable,
       order: menuDoc.data().order, // order of the food displayed
       originalStockCount: menuDoc.data().originalStockCount,
@@ -109,6 +109,8 @@ export const getPublicMenuList = async () => {
   const querySnapshot = await getDocs(q);
   for (let i = 0; i < querySnapshot.docs.length; i++) {
     const menuDoc = querySnapshot.docs[i];
+    const isPriceVisibleToCustomer =
+      menuDoc.data().isPriceVisibleToCustomer ?? true;
     // const docRef = doc(getDbAccess(), 'menuType', menuDoc.data().type);
     // const typeSnap = await getDoc(docRef);
     const menu = {
@@ -116,13 +118,11 @@ export const getPublicMenuList = async () => {
       title: menuDoc.data().title,
       subTitle: menuDoc.data().subTitle,
       type: menuDoc.data().type,
-      price: menuDoc.data().price,
-      cost: menuDoc.data().cost,
+      price: isPriceVisibleToCustomer ? menuDoc.data().price : null,
       description: menuDoc.data().description,
       ingredients: menuDoc.data().ingredients,
       image: menuDoc.data().image,
-      isPriceVisibleToCustomer:
-        menuDoc.data().isPriceVisibleToCustomer !== false,
+      isPriceVisibleToCustomer,
       isAvailable: menuDoc.data().isAvailable,
       order: menuDoc.data().order, // order of the food displayed
       originalStockCount: menuDoc.data().originalStockCount,
@@ -145,7 +145,7 @@ export const addMenu = async (item) => {
     ingredients: item.ingredients,
     image: item.image,
     isVisibleToCustomer: item.isVisibleToCustomer,
-    isPriceVisibleToCustomer: item.isPriceVisibleToCustomer !== false,
+    isPriceVisibleToCustomer: item.isPriceVisibleToCustomer ?? true,
     isAvailable: item.isAvailable,
     order: item.order, // order of the food displayed
     originalStockCount: item.originalStockCount,
@@ -169,7 +169,7 @@ export const updateMenu = async (item) => {
     ingredients: item.ingredients,
     image: item.image,
     isVisibleToCustomer: item.isVisibleToCustomer,
-    isPriceVisibleToCustomer: item.isPriceVisibleToCustomer !== false,
+    isPriceVisibleToCustomer: item.isPriceVisibleToCustomer ?? true,
     isAvailable: item.isAvailable,
     order: item.order, // order of the food displayed
     originalStockCount: item.originalStockCount,

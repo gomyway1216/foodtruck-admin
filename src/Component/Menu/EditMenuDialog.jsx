@@ -71,12 +71,12 @@ const EditMenuDialog = (props) => {
         ...defaultItem,
         ...props.existingItem,
         isPriceVisibleToCustomer:
-          props.existingItem.isPriceVisibleToCustomer !== false
+          props.existingItem.isPriceVisibleToCustomer ?? true
       });
     } else {
       setItem(defaultItem);
     }
-  }, [props.open]);
+  }, [props.open, props.existingItem]);
 
   const onItemInputChange = (e) => {
     setItem({
@@ -119,8 +119,7 @@ const EditMenuDialog = (props) => {
   const onSave = async () => {
     try {
       const itemCopy = {
-        ...item,
-        isPriceVisibleToCustomer: item.isPriceVisibleToCustomer !== false
+        ...item
       };
       itemCopy.price = Number(itemCopy.price);
       itemCopy.cost = Number(itemCopy.cost);
@@ -131,7 +130,7 @@ const EditMenuDialog = (props) => {
       // verify the input is valid
       const { title, type, price, description } = itemCopy;
       let errorExist = false;
-      const inputErrorCopy = inputError;
+      const inputErrorCopy = { ...inputError };
       if(!title) {
         errorExist = true;
         inputErrorCopy.title = 'title needs to be set';
@@ -366,7 +365,7 @@ const EditMenuDialog = (props) => {
               <FormControlLabel
                 control={<Switch
                   name='isPriceVisibleToCustomer'
-                  checked={item['isPriceVisibleToCustomer'] !== false}
+                  checked={item['isPriceVisibleToCustomer']}
                   onChange={onSwitchChange}
                 />}
                 label='Show price to customer'
