@@ -20,6 +20,7 @@ const defaultItem = {
   soldCount: 0,
   canceledCount: 0,
   isVisibleToCustomer: false,
+  isPriceVisibleToCustomer: true,
   isAvailable: false,
   image: ''
 };
@@ -37,6 +38,7 @@ const defaultInputError = {
   soldCount: '',
   canceledCount: '',
   isVisibleToCustomer: '',
+  isPriceVisibleToCustomer: '',
   isAvailable: '',
   image: ''
 };
@@ -65,11 +67,16 @@ const EditMenuDialog = (props) => {
   useEffect(() => {
     setOpen(props.open);
     if (props.existingItem) {
-      setItem(props.existingItem);
+      setItem({
+        ...defaultItem,
+        ...props.existingItem,
+        isPriceVisibleToCustomer:
+          props.existingItem.isPriceVisibleToCustomer ?? true
+      });
     } else {
       setItem(defaultItem);
     }
-  }, [props.open]);
+  }, [props.open, props.existingItem]);
 
   const onItemInputChange = (e) => {
     setItem({
@@ -111,7 +118,9 @@ const EditMenuDialog = (props) => {
 
   const onSave = async () => {
     try {
-      const itemCopy = item;
+      const itemCopy = {
+        ...item
+      };
       itemCopy.price = Number(itemCopy.price);
       itemCopy.cost = Number(itemCopy.cost);
       itemCopy.order = Number(itemCopy.order);
@@ -121,7 +130,7 @@ const EditMenuDialog = (props) => {
       // verify the input is valid
       const { title, type, price, description } = itemCopy;
       let errorExist = false;
-      const inputErrorCopy = inputError;
+      const inputErrorCopy = { ...inputError };
       if(!title) {
         errorExist = true;
         inputErrorCopy.title = 'title needs to be set';
@@ -355,6 +364,16 @@ const EditMenuDialog = (props) => {
             <Grid item={true} xs={12} sm={12} md={12}>
               <FormControlLabel
                 control={<Switch
+                  name='isPriceVisibleToCustomer'
+                  checked={item['isPriceVisibleToCustomer']}
+                  onChange={onSwitchChange}
+                />}
+                label='Show price to customer'
+              />
+            </Grid>
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <FormControlLabel
+                control={<Switch
                   name='isAvailable'
                   checked={item['isAvailable']}
                   onChange={onSwitchChange}
@@ -408,6 +427,7 @@ EditMenuDialog.propTypes = {
     soldCount: PropTypes.number,
     canceledCount: PropTypes.number,
     isVisibleToCustomer: PropTypes.bool,
+    isPriceVisibleToCustomer: PropTypes.bool,
     isAvailable: PropTypes.bool,
     image: PropTypes.string
   })
